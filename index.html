@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    .container{
+        width: 900px;
+        margin: 0 auto;
+    }
+    .chat-area {
+/*   border: 1px solid #ccc; */
+  background: white;
+  height: 50vh;
+  padding: 1em;
+  overflow: auto;
+  max-width: 350px;
+  margin: 0 auto 2em auto;
+  box-shadow: 2px 2px 5px 2px rgba(0, 0, 0, 0.3)
+}
+.message {
+  width: 45%;
+  border-radius: 10px;
+  padding: .5em;
+/*   margin-bottom: .5em; */
+  font-size: .8em;
+}
+.message-out {
+  background: #407FFF;
+  color: white;
+  margin-left: 50%;
+}
+.message-in {
+  background: #F1F0F0;
+  color: black;
+}
+.control{
+    max-width: 350px;
+    margin: 0 auto 2em auto;
+}
+input{
+    width: 100%;
+}
+</style>
+<body>
+    <div id="app">
+        <div class="container">
+            <p class="title is-1">VUE + Socket.IO</p>
+            <div class="notification is-primary">
+              Realtime Chat
+            </div>
+            <section class="chat-area">
+                <p  v-for="(message,index) in messages" :key="index" :class="(message.type == 'sender') ? 'message message-out' : 'message message-in'">
+                  {{ message.message }}
+                </p>
+              </section>
+                <div class="control is-grouped">
+                  <p class="control">
+                    <input class="input" v-model="messageInput" type="text" @keyup.enter="messagesend"/>
+                  </p>
+                </div>
+          </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.7/vue.js"></script>
+    <script>
+        var socket = io();
+        var app = new Vue({
+            el: "#app",
+            data: {
+                messages: [],
+                messageInput: ''
+            },
+            methods: {
+                messagesend(){
+                    this.messages.push({message: this.messageInput, type: 'sender'});
+                    socket.emit('realtime',{message: this.messageInput, type: 'sender'});
+                    this.messageInput = '';
+                }
+            },
+            created(){
+                console.log('created vue');
+
+                // @ Client's socket listen server send data
+                // @ server send to others (broadcast)
+                socket.on('realtime',(receiverData)=>{
+                    this.messages.push(receiverData);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
