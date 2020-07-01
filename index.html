@@ -6,10 +6,10 @@
     <title>Document</title>
 </head>
 <style>
-    .container{
-        width: 900px;
-        margin: 0 auto;
-    }
+  .container{
+      width: 900px;
+      margin: 0 auto;
+  }
     .chat-area {
 /*   border: 1px solid #ccc; */
   background: white;
@@ -65,8 +65,11 @@ input{
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
+    <!-- <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script> -->
+    <!-- <script src="https://cdn.socket.io/socket.io-1.0.0.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.7/vue.js"></script>
     <script>
+        // var socket = io.connect('http://socketproj.com:3000', {secure: true});
         var socket = io();
         var app = new Vue({
             el: "#app",
@@ -83,7 +86,6 @@ input{
             },
             created(){
                 console.log('created vue');
-
                 // @ Client's socket listen server send data
                 // @ server send to others (broadcast)
                 socket.on('realtime',(receiverData)=>{
